@@ -1,5 +1,12 @@
-{"properties": [{
-  "name": "nlp.file.store.location",
-  "type": "java.lang.String",
-  "description": "A description for 'nlp.file.store.location'"
-}]}
+{"properties": [
+  {
+    "name": "nlp.file.store.location",
+    "type": "java.lang.String",
+    "description": "A description for 'nlp.file.store.location'"
+  },
+  {
+    "name": "nlp.file.store.location",
+    "type": "java.lang.String",
+    "description": "A description for 'nlp.file.store.location'"
+  }
+]}

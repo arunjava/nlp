@@ -117,7 +117,12 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
+		<!-- Optional: If you need to save files to the filesystem or other
+		destinations -->
+		<!--<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>-->
 		<!-- NLP Dependent -->
 		<dependency>
 			<groupId>com.sun.xml.bind</groupId>

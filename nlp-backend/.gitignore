@@ -64,6 +64,7 @@ crashlytics-build.properties
 .metadata
 bin/
 tmp/
+indexDir/
 *.tmp
 *.bak
 *.swp
