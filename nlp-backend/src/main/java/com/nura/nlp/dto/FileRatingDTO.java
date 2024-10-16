@@ -13,5 +13,5 @@ public class FileRatingDTO {
 
 	private String fileName;
 	private float fileRatings;
-
+	private String sentiment;
 }

@@ -31,4 +31,10 @@ export class NlpService {
   processNLP(queryString: string) : Observable<FileRatings[]> {
     return this.httpClient.get<FileRatings[]>(this.apiURL + '/nlp/query/' + queryString);
   }
+
+  downloadFile(fileName: string): any {
+    const headers = new HttpHeaders();
+    headers.append('Content-Type', 'application/octet-stream');
+    return this.httpClient.get<any>(this.apiURL + `/nlp/download/${fileName}`, { headers, responseType: 'blob' as 'json'});
+  }
 }

@@ -23,6 +23,7 @@ import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.FuzzyQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
@@ -47,15 +48,16 @@ public class LuceneFileIndexer {
 		File[] files = new File(filePath).listFiles();
 		if (files != null) {
 			for (File file : files) {
-				indexFile(writer, file);
+				if (file.exists() && file.getName().endsWith(".txt")) {
+					indexFile(writer, file);
+				}
 			}
 		}
 		writer.close();
 
 		// Now, you can search indexed files
-		Map<String, Float> fileRatings = searchIndex(queryParams);
+		return searchIndex(queryParams);
 
-		return fileRatings;
 	}
 
 	// Method to index a single file
@@ -89,12 +91,18 @@ public class LuceneFileIndexer {
 		queryParams.forEach((key, value) -> {
 			if (key == BooleanClause.Occur.MUST) {
 				value.forEach(queryString -> {
-					try {
-						booleanQuery.add(new QueryParser(LuceneConstants.CONTENT, analyzer).parse(queryString),
-								BooleanClause.Occur.MUST);
-					} catch (ParseException e) {
-						e.printStackTrace();
-					}
+					//						booleanQuery.add(new QueryParser(LuceneConstants.CONTENT, analyzer).parse(queryString),
+//								BooleanClause.Occur.MUST);
+					booleanQuery.add(new FuzzyQuery(new org.apache.lucene.index.Term("content", queryString), 2),
+							BooleanClause.Occur.MUST);
+				});
+			} else if (key == BooleanClause.Occur.SHOULD) {
+				value.forEach(queryString -> {
+					// booleanQuery.add(new QueryParser(LuceneConstants.CONTENT,
+					// analyzer).parse(queryString),
+//								BooleanClause.Occur.SHOULD);
+					booleanQuery.add(new FuzzyQuery(new org.apache.lucene.index.Term("content", queryString), 2),
+							BooleanClause.Occur.SHOULD);
 				});
 			}
 		});

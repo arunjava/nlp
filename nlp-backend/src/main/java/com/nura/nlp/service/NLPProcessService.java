@@ -17,12 +17,23 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.nura.nlp.dto.FileRatingDTO;
 import com.nura.nlp.lucene.LuceneFileIndexer;
+import com.nura.nlp.stanford.SentimentAnalysis;
+import com.nura.nlp.util.SentimentResult;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class NLPProcessService {
 
 	@Value("${nlp.file.store.location}")
 	private String nlpFileLocation;
+
+	private SynonymFinderService synFinderService;
+
+	public NLPProcessService(SynonymFinderService synFinderService) {
+		this.synFinderService = synFinderService;
+	}
 
 	public List<FileRatingDTO> processNLP(String queryString) {
 		List<FileRatingDTO> fileRatingList = new ArrayList<>();
@@ -31,13 +42,32 @@ public class NLPProcessService {
 
 		System.out.println(queryParams);
 
+		/**
+		 * Add the matching the synonyms
+		 */
+		try {
+			List<String> querySplit = queryParams.get(BooleanClause.Occur.MUST);
+			for (String s : querySplit) {
+				queryParams.computeIfAbsent(BooleanClause.Occur.SHOULD, k -> new ArrayList<String>())
+						.addAll(this.synFinderService.findSynonym(s));
+			}
+
+		} catch (Exception e) {
+			log.error("Unable to find the synonym", e);
+		}
+
+		log.info("Final query params formed : {}", queryParams);
+
 		try {
 			Map<String, Float> fileRatings = LuceneFileIndexer.process(queryParams, nlpFileLocation);
 			fileRatings.forEach((key, value) -> {
-				FileRatingDTO fileRatingDTO = new FileRatingDTO();
-				fileRatingDTO.setFileName(key.substring(nlpFileLocation.length(), key.length()));
-				fileRatingDTO.setFileRatings(value);
-				fileRatingList.add(fileRatingDTO);
+				// Perform sentiment analysis
+				if (SentimentAnalysis.analyzeSentiment(key).equals(SentimentResult.POSITIVE)) {
+					FileRatingDTO fileRatingDTO = new FileRatingDTO();
+					fileRatingDTO.setFileName(key.substring(nlpFileLocation.length(), key.length()));
+					fileRatingDTO.setFileRatings(value);
+					fileRatingList.add(fileRatingDTO);
+				}
 			});
 			System.out.println(fileRatings);
 

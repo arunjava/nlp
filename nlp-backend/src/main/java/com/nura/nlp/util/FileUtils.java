@@ -13,12 +13,12 @@ public class FileUtils {
 
 	}
 
-	public static String readFileContent(String filePath) throws IOException {
-		return new String(Files.readAllBytes(Paths.get(filePath)));
+	public static String readFileContent(String filePath) {
+		try {
+			return new String(Files.readAllBytes(Paths.get(filePath)));
+		} catch (IOException e) {
+			return "";
+		}
 	}
 
-	public static void main(String[] args) throws IOException {
-		String filecontent = readFileContent("C:\\Temp\\Data\\Job Openings\\java opening.txt");
-		System.out.println(filecontent);
-	}
 }

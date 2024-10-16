@@ -18,7 +18,7 @@ public class TokenizeExample {
 		StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
 
 		// Input text
-		String text = "Anna University is located in Chennai. Job openings filled in the university. Opening in hospital";
+		String text = "java job opening in tcs is not anymore. do Not apply anymore .";
 
 		// Create a document object
 		CoreDocument document = new CoreDocument(text);
@@ -33,6 +33,7 @@ public class TokenizeExample {
 
 		// Sentiment analysis for each sentence
 		for (CoreSentence sentence : document.sentences()) {
+			System.out.println(sentence);
 			String sentiment = sentence.sentiment();
 			System.out.println("Sentiment: " + sentiment);
 		}

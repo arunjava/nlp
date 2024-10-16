@@ -1,11 +1,18 @@
 package com.nura.nlp.controller;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.net.http.HttpHeaders;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,6 +60,27 @@ public class NLPController {
 			fileNames.add(f.getName());
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(fileNames);
+	}
+
+	@GetMapping("/download/{filename}")
+	public ResponseEntity<Resource> downloadFile(@PathVariable String filename) {
+		File downLoadFile = new File(nlpFileLocation + filename);
+
+		try {
+			if (downLoadFile.exists()) {
+				InputStream in = new FileInputStream(downLoadFile);
+				org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+				headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+				headers.setContentDispositionFormData("attachment", filename);
+
+				return ResponseEntity.ok().headers(headers).body(new InputStreamResource(in));
+			} else {
+				return ResponseEntity.notFound().build();
+			}
+		} catch (FileNotFoundException e) {
+			return ResponseEntity.notFound().build();
+		}
+
 	}
 
 	@PostMapping("/upload")
