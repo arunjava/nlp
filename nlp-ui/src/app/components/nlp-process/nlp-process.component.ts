@@ -17,7 +17,7 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
   styleUrl: './nlp-process.component.css'
 })
 export class NlpProcessComponent implements OnInit {
-  displayedColumns: string[] = ['select', 'fileName', 'fileRatings'];
+  displayedColumns: string[] = ['select', 'fileName', 'fileRatings', 'sentimentMap'];
   dataSource = new MatTableDataSource<FileRatings>();
   selection = new SelectionModel<FileRatings>(true, []);
   fileRatings: FileRatings[] = [];

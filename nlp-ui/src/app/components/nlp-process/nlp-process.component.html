@@ -46,8 +46,13 @@
                     </ng-container>
 
                     <ng-container matColumnDef="fileRatings">
-                        <th mat-header-cell *matHeaderCellDef> Ratings </th>
+                        <th mat-header-cell *matHeaderCellDef> Search Rating </th>
                         <td mat-cell *matCellDef="let element"> {{element.fileRatings}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="sentimentMap">
+                        <th mat-header-cell *matHeaderCellDef> Sentimental Keywords </th>
+                        <td mat-cell *matCellDef="let element"> {{element.sentimentMap}} </td>
                     </ng-container>
 
                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

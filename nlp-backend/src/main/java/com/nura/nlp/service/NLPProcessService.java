@@ -62,12 +62,19 @@ public class NLPProcessService {
 			Map<String, Float> fileRatings = LuceneFileIndexer.process(queryParams, nlpFileLocation);
 			fileRatings.forEach((key, value) -> {
 				// Perform sentiment analysis
-				if (SentimentAnalysis.analyzeSentiment(key).equals(SentimentResult.POSITIVE)) {
-					FileRatingDTO fileRatingDTO = new FileRatingDTO();
-					fileRatingDTO.setFileName(key.substring(nlpFileLocation.length(), key.length()));
-					fileRatingDTO.setFileRatings(value);
-					fileRatingList.add(fileRatingDTO);
-				}
+//				if (SentimentAnalysis.analyzeSentiment(key).equals(SentimentResult.POSITIVE)) {
+//					FileRatingDTO fileRatingDTO = new FileRatingDTO();
+//					fileRatingDTO.setFileName(key.substring(nlpFileLocation.length(), key.length()));
+//					fileRatingDTO.setFileRatings(value);
+//					fileRatingList.add(fileRatingDTO);
+//				}
+				Map<String, Integer> sentimentResult = SentimentAnalysis.analyzeSentiment(key);
+				FileRatingDTO fileRatingDTO = new FileRatingDTO();
+				fileRatingDTO.setFileName(key.substring(nlpFileLocation.length(), key.length()));
+				fileRatingDTO.setFileRatings(value);
+				fileRatingDTO.setSentimentMap(sentimentResult.toString());
+				fileRatingList.add(fileRatingDTO);
+
 			});
 			System.out.println(fileRatings);
 
